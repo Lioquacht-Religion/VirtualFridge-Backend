@@ -1,0 +1,46 @@
+# Compiled source #
+###################
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Logs and databases #
+######################
+*.log
+*dblogininfo.txt
+src/main/resources/dblogininfo.txt
+*/dblogininfo.txt
+src/main/resources/keystore/vfridge.p12
+src/main/resources/application.properties
+
+
+# OS generated files #
+######################
+Thumbs.db
+
+# Gradle Files #
+################
+.gradle
+.m2
+
+# Build output directies
+/target
+*/target
+/build
+*/build
+bin/
+build/
+
+# IntelliJ specific files/directories
+out
+.idea
+
+# Eclipse specific files/directories
+.classpath
+.project
+.settings
+.metadata
+
