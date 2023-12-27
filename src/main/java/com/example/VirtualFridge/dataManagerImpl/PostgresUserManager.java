@@ -160,6 +160,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
         Connection connection = null;
 
         try {
+            Class.forName("com.postgres.jdbc.Driver");
             connection = basicDataSource.getConnection();
             //stmt = connection.createStatement();
 
@@ -188,6 +189,8 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
         try {
             stmt.close();
