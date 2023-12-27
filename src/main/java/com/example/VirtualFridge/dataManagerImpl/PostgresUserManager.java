@@ -7,6 +7,11 @@ import com.example.VirtualFridge.model.Storage;
 import com.example.VirtualFridge.model.User;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.provisioning.UserDetailsManager;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -18,7 +23,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class PostgresUserManager implements UserManager {
+public class PostgresUserManager implements UserManager, UserDetailsService {
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return this.getUser("email", username);
+    }
+
     String databaseURL;
             //"jdbc:postgresql://127.0.0.1:5432/virtualfridge";
     String username;
@@ -158,7 +168,8 @@ public class PostgresUserManager implements UserManager {
             );
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, user.getPassword());
+            stmt.setString(3, new BCryptPasswordEncoder().encode(
+                    user.getPassword()));
            /*
            old, not secure code, because of risk from SQL injection
             String udapteSQL =

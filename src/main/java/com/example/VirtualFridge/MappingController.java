@@ -41,6 +41,11 @@ public class MappingController {
     }
 
 
+    @GetMapping("/hello")
+    public String getHello(){
+        return "Hello";
+    }
+
     @GetMapping("/user/all")
     public Collection<User> getUsers(//@RequestParam(value = "email", defaultValue = "none")
                              //String email

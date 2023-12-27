@@ -1,8 +1,13 @@
 package com.example.VirtualFridge.model;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
-public class User {
+public class User implements UserDetails {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -49,8 +54,41 @@ public class User {
     public String getEmail() {
         return email;
     }
+    @Override
+    public String getUsername(){
+        return this.email;
+    }
 
+        @Override
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return new ArrayList<>();
+    }
+
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+
 }
