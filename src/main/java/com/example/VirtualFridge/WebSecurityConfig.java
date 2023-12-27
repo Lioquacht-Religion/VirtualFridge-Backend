@@ -18,7 +18,10 @@ extends WebSecurityConfigurerAdapter {
         throws Exception{
         http
                 .authorizeRequests()
-                .antMatchers("/").permitAll()
+                .antMatchers(
+                        "/api/v1.0/hello",
+                        "/api/v1.0/user/register"
+                        ).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()

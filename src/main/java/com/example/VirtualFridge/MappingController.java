@@ -30,7 +30,7 @@ import static java.lang.Integer.parseInt;
 public class MappingController {
 
     @PostMapping(
-            path = "/user",
+            path = "/user/register",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
