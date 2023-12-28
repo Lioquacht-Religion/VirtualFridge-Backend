@@ -10,6 +10,9 @@
 # Logs and databases #
 ######################
 *.log
+
+src/main/resources/.dblogininfo
+src/main/resources/.dblogininfo2
 *dblogininfo.txt
 src/main/resources/dblogininfo.txt
 */dblogininfo.txt

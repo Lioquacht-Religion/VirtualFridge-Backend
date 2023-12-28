@@ -29,10 +29,9 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
         return this.getUser("email", username);
     }
 
-    String databaseURL;
-            //"jdbc:postgresql://127.0.0.1:5432/virtualfridge";
-    String username;
-    String password;
+    String databaseURL = "";
+    String username = "";
+    String password = "";
     BasicDataSource basicDataSource;
 
     void getDBLoginData(String filename){
@@ -65,11 +64,12 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
 
     private PostgresUserManager() {
         basicDataSource = new BasicDataSource();
-        this.getDBLoginData("src/main/resources/dblogininfo.txt");
+        this.getDBLoginData("src/main/resources/.dblogininfo");
+        //basicDataSource.setDriverClassName("org.postgresql.Driver");
         basicDataSource.setUrl(databaseURL);
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
-        basicDataSource.setDriverClassName("org.postgresql.Driver");
+        //basicDataSource.setDriverClassName("org.postgresql.Driver");
     }
 
     static public PostgresUserManager getPostgresUserManager() {

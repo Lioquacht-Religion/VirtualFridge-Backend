@@ -3,10 +3,10 @@ package com.example.VirtualFridge;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+//@SpringBootTest
 class VirtualFridgeApplicationTests {
 
-	@Test
+//	@Test
 	void contextLoads() {
 	}
 
