@@ -20,7 +20,8 @@ extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1.0/hello",
-                        "/api/v1.0/user/register"
+                        "/api/v1.0/user/register",
+                        "/api/v1.0/user/all"
                         ).permitAll()
                 .anyRequest().authenticated()
                 .and()
