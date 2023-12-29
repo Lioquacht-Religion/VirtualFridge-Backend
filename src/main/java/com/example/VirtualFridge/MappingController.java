@@ -8,6 +8,9 @@ import com.example.VirtualFridge.model.alexa.OutputSpeechRO;
 import com.example.VirtualFridge.model.alexa.ResponseRO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.example.VirtualFridge.model.alexa.AlexaRO;
 
@@ -60,9 +63,11 @@ public class MappingController {
 
     @GetMapping("/user/email"
     )
-    public User getUser(@RequestParam String email
+    public User getUser(
+            @AuthenticationPrincipal User user
+            //@RequestParam String email
     ){
-        return getPostgresUserManager().getUser("email", email);
+        return getPostgresUserManager().getUser(user.getEmail());
     }
 
     //TODO: Fix
@@ -104,7 +109,7 @@ public class MappingController {
     public Storage getStorage(@RequestParam String storName, @RequestParam String email){
 
         return getPostgresUserManager().getStorage(storName,
-                getPostgresUserManager().getUser("email", email));
+                getPostgresUserManager().getUser(email));
     }
 
     @DeleteMapping(
@@ -168,7 +173,7 @@ public class MappingController {
                                 @RequestBody Grocery grocery){
         //getPropertyFileUserManager("src/main/resources/user.properties").addUser(user);
         final PostgresUserManager PostgresManager = getPostgresUserManager();
-        User owner = PostgresManager.getUser("email", ownerEmail);
+        User owner = PostgresManager.getUser(ownerEmail);
         Storage storage = PostgresManager.getStorage(storName, owner);
         getPostgresUserManager().addGrocery(storage, grocery);
         return "posted grocery: " + grocery.getName() + "into Storage: " + storage.getName();
@@ -202,7 +207,7 @@ public class MappingController {
     ){
 
         final PostgresUserManager PostgresManager = getPostgresUserManager();
-        User owner = PostgresManager.getUser("email", ownerEmail);
+        User owner = PostgresManager.getUser(ownerEmail);
         Storage storage = PostgresManager.getStorage(storName, owner);
         return PostgresManager.getGroceries(storage.getStorageID());
     }
@@ -340,7 +345,7 @@ public class MappingController {
 
             try {
                 Storage storage = getPostgresUserManager().getStorage("Lager1",
-                        getPostgresUserManager().getUser("email", "klaus@mail.com"));
+                        getPostgresUserManager().getUser("klaus@mail.com"));
                 storage.setIDs(106, 80);
                 storage.setGroceries();
                 //AtomicInteger i = new AtomicInteger(0);

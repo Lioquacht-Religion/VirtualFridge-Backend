@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 public class PostgresUserManager implements UserManager, UserDetailsService {
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.getUser("email", username);
+        return this.getUser(username);
     }
 
     String databaseURL = "";
@@ -64,7 +64,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
 
     private PostgresUserManager() {
         basicDataSource = new BasicDataSource();
-        this.getDBLoginData("src/main/resources/.dblogininfo");
+        this.getDBLoginData("src/main/resources/.dblogininfo2");
         //basicDataSource.setDriverClassName("org.postgresql.Driver");
         basicDataSource.setUrl(databaseURL);
         basicDataSource.setUsername(username);
@@ -115,19 +115,19 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
     }
 
     //@Override
-    public User getUser(String attToSearch, String attribute) {
+    public User getUser(String email) {
 
         User r_user = new User("notFound", "404", "BOB");
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         Connection connection = null;
 
         try {
             connection = basicDataSource.getConnection();
-            stmt = connection.createStatement();
-            String getUser =
-                    "SELECT * FROM users WHERE " + attToSearch + " = '" + attribute + "'";
+            stmt = connection.prepareStatement(
+                    "SELECT * FROM users WHERE email = ? ");
+            stmt.setString(1, email);
 
-            ResultSet rs = stmt.executeQuery(getUser);
+            ResultSet rs = stmt.executeQuery();
 
             if(rs.next()) {
                 r_user = new User(
