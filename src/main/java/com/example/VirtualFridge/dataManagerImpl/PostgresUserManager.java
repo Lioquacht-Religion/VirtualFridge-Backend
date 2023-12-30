@@ -64,7 +64,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
 
     private PostgresUserManager() {
         basicDataSource = new BasicDataSource();
-        this.getDBLoginData("src/main/resources/.dblogininfo2");
+        this.getDBLoginData("src/main/resources/.dblogininfo");
         //basicDataSource.setDriverClassName("org.postgresql.Driver");
         basicDataSource.setUrl(databaseURL);
         basicDataSource.setUsername(username);
