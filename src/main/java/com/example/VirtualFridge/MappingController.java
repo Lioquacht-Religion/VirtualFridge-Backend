@@ -61,6 +61,11 @@ public class MappingController {
         //return userList;
     }
 
+    @GetMapping("/user/authenticated")
+    public boolean getUserAuthenticated(){
+        return true;
+    }
+
     @GetMapping("/user/email"
     )
     public User getUser(
