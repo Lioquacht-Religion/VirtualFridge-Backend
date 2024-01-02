@@ -8,6 +8,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.sql.Array;
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -17,6 +24,8 @@ public class WebSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http)
         throws Exception{
         http
+                .cors()
+                .and()
                 .authorizeRequests()
                 .antMatchers(
                         "/api/v1.0/hello",
@@ -29,6 +38,28 @@ public class WebSecurityConfig {
                 .and()
                 .csrf().disable();
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource(){
+        final CorsConfiguration conf = new CorsConfiguration();
+        conf.setAllowedOrigins(
+                Arrays.asList(
+                        "http://localhost:7878",
+                        "http://localhost:4200",
+                        "https://lioquacht-religion.github.io/VirtualFridge-Frontend"
+                )
+        );
+        conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
+        conf.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
+        conf.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", conf);
+        return source;
+
+
+
     }
 
     @Bean

@@ -27,7 +27,7 @@ import static java.lang.Integer.parseInt;
 
 //TODO: CHange all propertyfilemanager zu postgres
 
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+//@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/v1.0")
 public class MappingController {
@@ -61,9 +61,15 @@ public class MappingController {
         //return userList;
     }
 
-    @GetMapping("/user/authenticated")
-    public boolean getUserAuthenticated(){
-        return true;
+    @GetMapping(path= "/user/authenticated",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public User getUserAuthenticated(
+            @AuthenticationPrincipal User user
+    ){
+        User l_user = new User(user.getName(), user.getEmail(), "");
+        l_user.setID(user.getID());
+        return l_user;
     }
 
     @GetMapping("/user/email"
