@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                 Arrays.asList(
                         "http://localhost:7878",
                         "http://localhost:4200",
-                        "https://lioquacht-religion.github.io/VirtualFridge-Frontend"
+                        "https://lioquacht-religion.github.io"
                 )
         );
         conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
