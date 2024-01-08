@@ -1,31 +1,29 @@
 package com.example.VirtualFridge;
 
 
+import com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager;
+import com.example.VirtualFridge.dataManagerImpl.PostgresTableManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresUserManager;
-import com.example.VirtualFridge.dataManagerImpl.PropertyFileUserManager;
 import com.example.VirtualFridge.model.*;
 import com.example.VirtualFridge.model.alexa.OutputSpeechRO;
 import com.example.VirtualFridge.model.alexa.ResponseRO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import com.example.VirtualFridge.model.alexa.AlexaRO;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import static com.example.VirtualFridge.dataManagerImpl.PostgresRecipeManager.getPostgresRecipeManager;
+import static com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager.getPostgresStorageManager;
+import static com.example.VirtualFridge.dataManagerImpl.PostgresTableManager.getPostgresTableManager;
 import static com.example.VirtualFridge.dataManagerImpl.PostgresUserManager.getPostgresUserManager;
-import static com.example.VirtualFridge.dataManagerImpl.PropertyFileUserManager.getPropertyFileUserManager;
 import static java.lang.Integer.parseInt;
 
-//TODO: CHange all propertyfilemanager zu postgres
 
 //@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
@@ -42,7 +40,6 @@ public class MappingController {
         getPostgresUserManager().addUser(user);
         return "posted user with email " + user.getEmail();
     }
-
 
     @GetMapping("/hello")
     public String getHello(){
@@ -81,17 +78,36 @@ public class MappingController {
         return getPostgresUserManager().getUser(user.getEmail());
     }
 
-    //TODO: Fix
-    @PutMapping(path= "/user",
+    //TODO: change endpoint in frontend
+    @PutMapping(path= "/user/update",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String putUser(@RequestBody User user
+    public String putUser(
+            @AuthenticationPrincipal User user,
+            @RequestBody User updateUserData
     ){
-        getPostgresUserManager().putUser(user);
+        getPostgresUserManager().putUser(updateUserData, user);
         return "updated User: " + user.getEmail();
     }
+
+    @DeleteMapping(
+            path="/user/delete"
+            )
+    @ResponseStatus(HttpStatus.OK)
+    public String deleteUser(
+            @AuthenticationPrincipal User user,
+            @RequestParam String userID, @RequestParam String email, @RequestParam String password){
+        //UserList userList = new UserList();
+        //userList.setUsers();
+        //userList.deleteUser(user);
+        //getPropertyFileUserManager("src/main/resources/user.properties").storeAllUsers(userList.getUsers());
+        getPostgresUserManager().deleteUser(user.getID(), user.getEmail(), user.getPassword());
+
+        return userID;
+    }
+
 
     @PostMapping(
             path = "/user/createtable"
@@ -100,9 +116,9 @@ public class MappingController {
     public String createUserTable() {
         Logger.getLogger("Test").log(Level.INFO, "Start Post create Table");
 
-        final PostgresUserManager postgresUserManager =
-                getPostgresUserManager();
-        postgresUserManager.createTableUser();
+        final PostgresTableManager postgresTableManager =
+                getPostgresTableManager();
+        postgresTableManager.createTableUser();
 
         return "Database Table created";
     }
@@ -110,43 +126,32 @@ public class MappingController {
 
     @GetMapping("/user/storage/all")
     @ResponseStatus(HttpStatus.OK)
-    public Collection<Storage> getUserStorages(@RequestParam String OwnerID){
-
-        return getPostgresUserManager().getStorages(parseInt(OwnerID));
+    public Collection<Storage> getUserStorages(
+            @AuthenticationPrincipal User user
+            //@RequestParam String OwnerID
+    ){
+        return getPostgresStorageManager().getStorages(user.getID());
     }
 
     @GetMapping("/storage")
     @ResponseStatus(HttpStatus.OK)
-    public Storage getStorage(@RequestParam String storName, @RequestParam String email){
-
-        return getPostgresUserManager().getStorage(storName,
-                getPostgresUserManager().getUser(email));
+    public Storage getStorage(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storID){
+        return getPostgresStorageManager().getStorage(storID, user);
     }
 
-    @DeleteMapping(
-            path="/user"
-            )
-    @ResponseStatus(HttpStatus.OK)
-    public String deleteUser(@RequestParam String userID, @RequestParam String email, @RequestParam String password){
-        //UserList userList = new UserList();
-        //userList.setUsers();
-        //userList.deleteUser(user);
-        //getPropertyFileUserManager("src/main/resources/user.properties").storeAllUsers(userList.getUsers());
-        getPostgresUserManager().deleteUser(Integer.parseInt(userID), email, password);
-
-        return userID;
-    }
 
     @DeleteMapping(path="/storage")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteStorage(@RequestParam int userID, @RequestParam int storageID){
-        return getPostgresUserManager().deleteStorage(userID, storageID);
+    public String deleteStorage(@AuthenticationPrincipal User user, @RequestParam int storageID){
+        return getPostgresStorageManager().deleteStorage(user.getID(), storageID);
     }
 
     @DeleteMapping(path="/grocery")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteGrocery(@RequestParam int storageID, @RequestParam int groceryID){
-        return getPostgresUserManager().deleteGrocery(storageID, groceryID);
+    public String deleteGrocery(@AuthenticationPrincipal User user, @RequestParam int storageID, @RequestParam int groceryID){
+        return getPostgresStorageManager().deleteGrocery(user.getID(), storageID, groceryID);
     }
 
     @PostMapping(
@@ -154,9 +159,12 @@ public class MappingController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String createStorage(@RequestBody Storage storage){
+    public String createStorage(
+            @AuthenticationPrincipal User user,
+            @RequestBody Storage storage
+    ){
         //getPropertyFileUserManager("src/main/resources/user.properties").addUser(user);
-        getPostgresUserManager().addStorage(storage);
+        getPostgresStorageManager().addStorage(storage, user.getID());
         return "posted storage: " + storage.getName();
     }
 
@@ -166,11 +174,7 @@ public class MappingController {
     @ResponseStatus(HttpStatus.OK)
     public String createStorageTable() {
         //Logger.getLogger("Test").log(Level.INFO, "Start Post create Table");
-
-        final PostgresUserManager postgresUserManager =
-                getPostgresUserManager();
-        postgresUserManager.createTableStorage();
-
+        getPostgresTableManager().createTableStorage();
         return "Database Storage Table created";
     }
 
@@ -179,14 +183,15 @@ public class MappingController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String createGrocery(@RequestParam String storName,
-                                @RequestParam String ownerEmail,
-                                @RequestBody Grocery grocery){
+    public String createGrocery(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storID,
+            @RequestParam String ownerEmail,
+            @RequestBody Grocery grocery){
         //getPropertyFileUserManager("src/main/resources/user.properties").addUser(user);
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        User owner = PostgresManager.getUser(ownerEmail);
-        Storage storage = PostgresManager.getStorage(storName, owner);
-        getPostgresUserManager().addGrocery(storage, grocery);
+        final PostgresStorageManager StorageManager = getPostgresStorageManager();
+        Storage storage = StorageManager.getStorage(storID, user);
+        StorageManager.addGrocery(storID, grocery);
         return "posted grocery: " + grocery.getName() + "into Storage: " + storage.getName();
     }
 
@@ -195,32 +200,29 @@ public class MappingController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String createGroceryByID(@RequestParam String storageID,
+    public String createGroceryByID(@RequestParam int storageID,
                                 @RequestBody Grocery grocery){
-        getPostgresUserManager().addGrocery(Integer.parseInt(storageID), grocery);
+        getPostgresStorageManager().addGrocery(storageID, grocery);
         return "posted grocery: " + grocery.getName() + "into Storage: " + storageID;
     }
 
-    @GetMapping("/storage/grocery/byID/all"
-    )
-    public Collection<Grocery> getStorageGroceriesByID(@RequestParam String storageID
+    @GetMapping("/storage/grocery/byID/all")
+    public Collection<Grocery> getStorageGroceriesByID(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storageID
     ){
-
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        return PostgresManager.getGroceries(Integer.parseInt(storageID));
+        return getPostgresStorageManager().getGroceries(user.getID(), storageID);
     }
 
 
     @GetMapping("/user/storage/grocery/all"
     )
-    public Collection<Grocery> getStorageGroceries(@RequestParam String storName,
-                                    @RequestParam String ownerEmail
+    public Collection<Grocery> getStorageGroceries(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storID
     ){
 
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        User owner = PostgresManager.getUser(ownerEmail);
-        Storage storage = PostgresManager.getStorage(storName, owner);
-        return PostgresManager.getGroceries(storage.getStorageID());
+        return getPostgresStorageManager().getGroceries(user.getID(), storID);
     }
 
 
@@ -229,36 +231,32 @@ public class MappingController {
     )
     @ResponseStatus(HttpStatus.OK)
     public String createGroceriesTable() {
-        //Logger.getLogger("Test").log(Level.INFO, "Start Post create Table");
 
-        final PostgresUserManager postgresUserManager =
-                getPostgresUserManager();
-        postgresUserManager.createTableGroceries();
+        getPostgresTableManager().createTableGroceries();
 
         return "Database Groceries Table created";
     }
 
-    @PostMapping(
-            path = "/recipe/createtable"
-    )
-    @ResponseStatus(HttpStatus.OK)
-    public String createRecipeTable() {
-        final PostgresUserManager postgresUserManager =
-                getPostgresUserManager();
-        //postgresUserManager.createTableUser_rel_Recipe();
-        postgresUserManager.createTableIngredients();
-        postgresUserManager.createTableRecipes();
+    @PostMapping("/recipe/createtable")
+    //@ResponseStatus(HttpStatus.OK)
+    public String createRecipeTable(@AuthenticationPrincipal User user) {
+        final PostgresTableManager postgresTableManager = getPostgresTableManager();
+        postgresTableManager.createTableRecipes();
+        postgresTableManager.createTableIngredients();
 
-        return "Database Recipes Table created";
+        return "Database Recipes Table created by " + user.getEmail();
     }
 
     @PostMapping(
             path = "/recipe",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
-    @ResponseStatus(HttpStatus.OK)
-    public String createRecipe(@RequestBody Recipe recipe, @RequestParam String OwnerID){
-        getPostgresUserManager().addRecipe(Integer.parseInt(OwnerID), recipe);
+    //@ResponseStatus(HttpStatus.OK)
+    public String createRecipe(
+            @AuthenticationPrincipal User user,
+            @RequestBody Recipe recipe
+    ){
+        getPostgresRecipeManager().addRecipe(user.getID(), recipe);
         return "posted recipe: " + recipe.getName();
     }
 
@@ -267,8 +265,8 @@ public class MappingController {
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String createIngredient(@RequestBody Grocery ingredient, @RequestParam String RecipeID){
-        getPostgresUserManager().addIngredient(Integer.parseInt(RecipeID), ingredient);
+    public String createIngredient(@RequestBody Grocery ingredient, @RequestParam int RecipeID){
+        getPostgresRecipeManager().addIngredient(RecipeID, ingredient);
         return "posted ingredient: " + ingredient.getName();
     }
 
@@ -277,9 +275,11 @@ public class MappingController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String putRecipe(@RequestBody Recipe recipe
+    public String putRecipe(
+            @AuthenticationPrincipal User user,
+            @RequestBody Recipe recipe
     ){
-        getPostgresUserManager().putRecipe(recipe);
+        getPostgresRecipeManager().putRecipe(user.getID(), recipe);
         return "updated Rezept: " + recipe.getName();
     }
 
@@ -288,57 +288,65 @@ public class MappingController {
             produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
     @ResponseStatus(HttpStatus.OK)
-    public String putIngredient(@RequestBody Grocery ingredient
+    public String putIngredient(
+            @AuthenticationPrincipal User user,
+            @RequestBody Grocery ingredient
     ){
-        getPostgresUserManager().putIngredient(ingredient);
+        getPostgresRecipeManager().putIngredient(user.getID(), ingredient);
         return "updated User: " + ingredient.getName();
     }
 
     @GetMapping("/recipe/ingredient/all"
     )
-    public Collection<Grocery> getRecipeGroceries(@RequestParam String recipeID){
-
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        return PostgresManager.getAllIngredients(Integer.parseInt(recipeID));
+    public Collection<Grocery> getRecipeGroceries(
+            @AuthenticationPrincipal User user,
+            @RequestParam int recipeID
+    ){
+        return getPostgresRecipeManager().getAllIngredients(user.getID(), recipeID);
     }
 
     @GetMapping("/recipe/all"
     )
-    public Collection<Recipe> getRecipes(@RequestParam String userID){
-
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        return PostgresManager.getAllRecipes(Integer.parseInt(userID));
+    public Collection<Recipe> getRecipes(@AuthenticationPrincipal User user){
+        return getPostgresRecipeManager().getAllRecipes(user.getID());
     }
 
     @GetMapping("/recipe/byID"
     )
-    public Recipe getRecipeByID(@RequestParam String recipeID){
-
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        return PostgresManager.getRecipeByID(Integer.parseInt(recipeID));
+    public Recipe getRecipeByID(
+            @AuthenticationPrincipal User user,
+            @RequestParam int recipeID
+    ){
+        return getPostgresRecipeManager().getRecipeByID(user.getID(), recipeID);
     }
 
     @DeleteMapping(path="/recipe")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteRecipe(@RequestParam String userID ,@RequestParam String recipeID){
-        return getPostgresUserManager().deleteRecipe(Integer.parseInt(userID), Integer.parseInt(recipeID));
+    public String deleteRecipe(
+            @AuthenticationPrincipal User user,
+            @RequestParam int recipeID
+    ){
+        return getPostgresRecipeManager().deleteRecipe(user.getID(), recipeID);
     }
 
     @DeleteMapping(path="/ingredient")
     @ResponseStatus(HttpStatus.OK)
-    public String deleteIngredient(@RequestParam String recipeID, @RequestParam String ingredientID){
-        return getPostgresUserManager().deleteIngredient(Integer.parseInt(recipeID), Integer.parseInt(ingredientID));
+    public String deleteIngredient(
+            @AuthenticationPrincipal User user,
+            @RequestParam int recipeID,
+            @RequestParam int ingredientID
+    ){
+        return getPostgresRecipeManager().deleteIngredient(user.getID(), recipeID, ingredientID);
     }
 
     @GetMapping("/storage/recipe/suggestion"
     )
     public Collection<Recipe> getRecipeSug(@RequestParam String userID, @RequestParam String storageID){
-
-        final PostgresUserManager PostgresManager = getPostgresUserManager();
-        return PostgresManager.getAllRecipeSuggestions(Integer.parseInt(userID), Integer.parseInt(storageID));
+        return getPostgresStorageManager().getAllRecipeSuggestions(Integer.parseInt(userID), Integer.parseInt(storageID));
     }
 
 
+    /*
     @PostMapping(
             path = "/alexa",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -355,7 +363,7 @@ public class MappingController {
             StringBuilder outText  = new StringBuilder("");
 
             try {
-                Storage storage = getPostgresUserManager().getStorage("Lager1",
+                Storage storage = getPostgresStorageManager().getStorage("Lager1",
                         getPostgresUserManager().getUser("klaus@mail.com"));
                 storage.setIDs(106, 80);
                 storage.setGroceries();
@@ -387,7 +395,9 @@ public class MappingController {
 
         //return alexaRO;
     }
+    */
 
+/*
     @PostMapping(
             path = "/alexa/readRecipes",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -431,7 +441,9 @@ public class MappingController {
 
         //return alexaRO;
     }
+*/
 
+    /*
     @PostMapping(
             path = "/alexa/postskill",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -449,30 +461,7 @@ public class MappingController {
 
             StringBuilder outText  = new StringBuilder("");
 
-
-            /*try {
-                Storage storage = getPostgresUserManager().getStorage("Lager1",
-                        getPostgresUserManager().getUser("email", "klaus@mail.com"));
-                storage.setIDs(9, 1);
-                storage.setGroceries();
-                //AtomicInteger i = new AtomicInteger(0);
-                storage.getGroceries().forEach(
-                        groceries -> {
-                            outText.append(" Storage contains: ");
-                            outText.append(groceries.getName() + " with the amount: " +
-                                    groceries.getAmount() + " " + groceries.getUnit());
-                        }
-                );
-                outText.append("Thank you for using our service");
-            }
-            catch (Exception e){
-                outText.append("Unfortunately, we cannot reach heroku. Our REST server is not responding");
-            }*/
-
-
-
-            return
-                    prepareResponse(alexaRO, outText.toString(), true);
+            return prepareResponse(alexaRO, outText.toString(), true);
         }
 
         return prepareResponse(alexaRO, "We could not help you", true);
@@ -482,7 +471,7 @@ public class MappingController {
 
 
         //return alexaRO;
-    }
+    }*/
 
 
     private AlexaRO prepareResponse(AlexaRO alexaRO, String outText, boolean shouldEndSession) {

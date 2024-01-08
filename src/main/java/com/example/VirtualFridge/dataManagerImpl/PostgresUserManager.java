@@ -63,13 +63,15 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
     static PostgresUserManager postgresUserManager = null;
 
     private PostgresUserManager() {
-        basicDataSource = new BasicDataSource();
+        basicDataSource = DBCredentialsManager.getBasicDataSource();
+        /*
         this.getDBLoginData("src/main/resources/.dblogininfo");
         //basicDataSource.setDriverClassName("org.postgresql.Driver");
         basicDataSource.setUrl(databaseURL);
         basicDataSource.setUsername(username);
         basicDataSource.setPassword(password);
         //basicDataSource.setDriverClassName("org.postgresql.Driver");
+         */
     }
 
     static public PostgresUserManager getPostgresUserManager() {
@@ -169,8 +171,10 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             );
             stmt.setString(1, user.getName());
             stmt.setString(2, user.getEmail());
-            stmt.setString(3, new BCryptPasswordEncoder().encode(
-                    user.getPassword()));
+            stmt.setString(3,
+                    new BCryptPasswordEncoder().encode(
+                    user.getPassword())
+            );
            /*
            old, not secure code, because of risk from SQL injection
             String udapteSQL =
@@ -201,23 +205,25 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
 
     }
 
-    public String putUser(User user) {
+    public String putUser(User updateUserData, User oldUserData) {
 
-        Statement stmt = null;
+        PreparedStatement stmt = null;
         Connection connection = null;
 
         try {
             connection = basicDataSource.getConnection();
-            stmt = connection.createStatement();
-            String udapteSQL =
-                    "UPDATE users " +
-                            "SET name = '" + user.getName() +
-                            "', email = '" + user.getEmail() +
-                            "', password ='" + user.getPassword() +"' "+
-                            "WHERE id = " + user.getID();
+            stmt = connection.prepareStatement(
+                    "UPDATE users SET name = ?, email = ?, password = ? WHERE id = ?;"
+            );
+            stmt.setString(1, updateUserData.getName() );
+            stmt.setString(2, oldUserData.getEmail() );
+            stmt.setString(3,
+                    new BCryptPasswordEncoder().encode(
+                    updateUserData.getPassword())
+            );
+            stmt.setInt(4, oldUserData.getID());
 
-
-            stmt.executeUpdate(udapteSQL);
+            stmt.executeUpdate();
 
             stmt.close();
             connection.close();
@@ -231,30 +237,47 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             e.printStackTrace();
         }
 
-        return "changed userstuff: " + user.getEmail();
+        return "changed userstuff: " + updateUserData.getEmail();
 
     }
 
     public void deleteUser(int userID, String email, String password){
 
-        Statement stmt = null; Connection connection = null;
+        PreparedStatement stmt = null; Connection connection = null;
         try{
-            connection = basicDataSource.getConnection(); stmt = connection.createStatement();
+            connection = basicDataSource.getConnection();
 
-            String deleteGroceries = "DELETE FROM groceries WHERE " +
-                    "storedin IN  (SELECT storageid FROM storages WHERE owner = " + userID + ");";
-            String deleteStorages = "DELETE FROM storages WHERE " +
-                    "owner = " + userID + ";";
+            String deleteGroceries =
+                    "DELETE FROM groceries WHERE storedin IN  (SELECT storageid FROM storages WHERE owner = ?);";
+            String deleteStorages =
+                    "DELETE FROM storages WHERE owner = ?;";
 
-            String deleteIngredients = "DELETE FROM ingredients WHERE " +
-                    "partofrecipe IN  (SELECT recipeid FROM recipes WHERE owner = " + userID + ");";
-            String deleteRecipes = "DELETE FROM recipes WHERE " +
-                    "owner = " + userID + ";";
+            String deleteIngredients =
+                    "DELETE FROM ingredients WHERE partofrecipe IN  (SELECT recipeid FROM recipes WHERE owner = ?);";
+            String deleteRecipes =
+                    "DELETE FROM recipes WHERE owner = ?;";
 
             System.out.println("delete User");
+            String deleteUser =
+                    "DELETE FROM users WHERE id = ? AND email = ? AND password = ?;";
 
-            String deleteUser = "DELETE FROM users WHERE " +
-                    "id =" + userID + "AND email = '" + email + "' AND password = '" + password +"';";
+
+            stmt = connection.prepareStatement(
+                    deleteGroceries + deleteStorages
+                    + deleteIngredients + deleteRecipes
+                    + deleteUser
+            );
+            stmt.setInt(1, userID);
+            stmt.setInt(2, userID);
+
+            stmt.setInt(3, userID);
+            stmt.setInt(4, userID);
+
+            stmt.setInt(5, userID);
+            stmt.setInt(6, userID);
+            stmt.setInt(7, userID);
+
+
             stmt.executeUpdate(deleteGroceries);
             stmt.executeUpdate(deleteStorages);
             stmt.executeUpdate(deleteIngredients);
@@ -269,6 +292,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
         }catch(SQLException e){e.printStackTrace();}
     }
 
+    /*
     public void createTableUser() {
 
         // Be carefull: It deletes data if table already exists.
@@ -885,6 +909,8 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             }
         return RecipeSugs;
     }
+
+    */
 
 
 
