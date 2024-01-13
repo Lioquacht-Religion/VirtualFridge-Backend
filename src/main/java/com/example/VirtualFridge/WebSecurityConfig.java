@@ -32,7 +32,8 @@ public class WebSecurityConfig {
                         "/api/v1.0/user/register",
                         "/api/v1.0/user/all",
                         "/api/v1.0/recipe/createtable",
-                        "/api/v1.0/shoppinglist/createtable"
+                        "/api/v1.0/shoppinglist/createtable",
+                        "/api/v1.0/shoppinglist/item/createtable"
                         ).permitAll()
                 .anyRequest().authenticated()
                 .and()

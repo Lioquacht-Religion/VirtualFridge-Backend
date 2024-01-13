@@ -374,7 +374,7 @@ public class MappingController {
     )
     public String postShoppingList(
             @AuthenticationPrincipal User user,
-            @RequestParam ShoppingList shoppingList
+            @RequestBody ShoppingList shoppingList
     ){
         return getPostgresShoppinglistManager().addShoppingList(shoppingList, user.getID());
     }
@@ -386,7 +386,7 @@ public class MappingController {
     public String postShoppingListItem(
             @AuthenticationPrincipal User user,
             @RequestParam int shoppingListId,
-            @RequestParam ShoppingListItem item
+            @RequestBody ShoppingListItem item
     ){
         return getPostgresShoppinglistManager().addItem(shoppingListId, item);
     }
@@ -421,9 +421,15 @@ public class MappingController {
     @GetMapping("/shoppinglist/createtable")
     public String createShoppingListTable(){
         getPostgresTableManager().createTableShoppinglist();
-        getPostgresTableManager().createTableShoppinglistItem();
         return "created shoppinglisttable";
     }
+
+    @GetMapping("/shoppinglist/item/createtable")
+    public String createShoppingListItemTable(){
+        getPostgresTableManager().createTableShoppinglistItem();
+        return "created shoppinglistitemtable";
+    }
+
 
 
 
