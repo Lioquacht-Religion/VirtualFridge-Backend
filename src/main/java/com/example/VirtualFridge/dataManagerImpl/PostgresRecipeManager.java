@@ -218,7 +218,7 @@ public class PostgresRecipeManager {
             stmt.setInt(1, recipeID);
             stmt.setInt(3, userID);
             stmt.setInt(2, recipeID);
-            stmt.executeUpdate(deleteStorage);
+            stmt.executeQuery(deleteStorage);
 
 
             stmt = connection.prepareStatement(deleteStorage);

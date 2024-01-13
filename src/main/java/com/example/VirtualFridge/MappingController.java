@@ -1,6 +1,7 @@
 package com.example.VirtualFridge;
 
 
+import com.example.VirtualFridge.dataManagerImpl.PostgresShoppinglistManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresTableManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresUserManager;
@@ -19,6 +20,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static com.example.VirtualFridge.dataManagerImpl.PostgresRecipeManager.getPostgresRecipeManager;
+import static com.example.VirtualFridge.dataManagerImpl.PostgresShoppinglistManager.getPostgresShoppinglistManager;
 import static com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager.getPostgresStorageManager;
 import static com.example.VirtualFridge.dataManagerImpl.PostgresTableManager.getPostgresTableManager;
 import static com.example.VirtualFridge.dataManagerImpl.PostgresUserManager.getPostgresUserManager;
@@ -237,7 +239,7 @@ public class MappingController {
         return "Database Groceries Table created";
     }
 
-    @PostMapping("/recipe/createtable")
+    @GetMapping("/recipe/createtable")
     //@ResponseStatus(HttpStatus.OK)
     public String createRecipeTable(@AuthenticationPrincipal User user) {
         final PostgresTableManager postgresTableManager = getPostgresTableManager();
@@ -339,11 +341,91 @@ public class MappingController {
         return getPostgresRecipeManager().deleteIngredient(user.getID(), recipeID, ingredientID);
     }
 
-    @GetMapping("/storage/recipe/suggestion"
-    )
+    @GetMapping("/storage/recipe/suggestion")
     public Collection<Recipe> getRecipeSug(@RequestParam String userID, @RequestParam String storageID){
         return getPostgresStorageManager().getAllRecipeSuggestions(Integer.parseInt(userID), Integer.parseInt(storageID));
     }
+
+    @GetMapping(
+            path="/shoppinglist/all",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public Collection<ShoppingList> getShoppingLists(
+            @AuthenticationPrincipal User user
+    ){
+        return getPostgresShoppinglistManager().getShoppingLists(user.getID());
+    }
+
+    @GetMapping(
+            path="/shoppinglist/item/all",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public Collection<ShoppingListItem> getShoppingListItems(
+            @AuthenticationPrincipal User user,
+            @RequestParam int shoppingListId
+    ){
+        return getPostgresShoppinglistManager().getListItems(user.getID(), shoppingListId);
+    }
+
+
+    @PostMapping(
+            path="/shoppinglist/add",
+            consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public String postShoppingList(
+            @AuthenticationPrincipal User user,
+            @RequestParam ShoppingList shoppingList
+    ){
+        return getPostgresShoppinglistManager().addShoppingList(shoppingList, user.getID());
+    }
+
+    @PostMapping(
+            path="/shoppinglist/item/add",
+            consumes= {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    public String postShoppingListItem(
+            @AuthenticationPrincipal User user,
+            @RequestParam int shoppingListId,
+            @RequestParam ShoppingListItem item
+    ){
+        return getPostgresShoppinglistManager().addItem(shoppingListId, item);
+    }
+
+    @DeleteMapping("/shoppinglist")
+    public String deleteShoppingList(
+            @AuthenticationPrincipal User user,
+            @RequestParam int shoppingListId
+    ){
+        return getPostgresShoppinglistManager().deleteShoppingList(user.getID(), shoppingListId);
+    }
+
+    @DeleteMapping("/shoppinglist/item")
+    public String deleteShoppingListItem(
+            @AuthenticationPrincipal User user,
+            @RequestParam int shoppingListId,
+            @RequestParam int itemId
+    ){
+        return getPostgresShoppinglistManager().deleteItem(user.getID(), shoppingListId, itemId);
+    }
+
+    @PutMapping("/shoppinglist/item/ticked")
+    public String putShoppingListItemTicked(
+            @AuthenticationPrincipal User user,
+            @RequestParam int shoppingListId,
+            @RequestParam int itemId,
+            @RequestParam boolean ticked
+    ){
+        return getPostgresShoppinglistManager().setItemTicked(user.getID(), shoppingListId, itemId, ticked);
+    }
+
+    @GetMapping("/shoppinglist/createtable")
+    public String createShoppingListTable(){
+        getPostgresTableManager().createTableShoppinglist();
+        getPostgresTableManager().createTableShoppinglistItem();
+        return "created shoppinglisttable";
+    }
+
+
 
 
     /*

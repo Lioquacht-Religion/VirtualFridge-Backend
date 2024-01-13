@@ -30,7 +30,9 @@ public class WebSecurityConfig {
                 .antMatchers(
                         "/api/v1.0/hello",
                         "/api/v1.0/user/register",
-                        "/api/v1.0/user/all"
+                        "/api/v1.0/user/all",
+                        "/api/v1.0/recipe/createtable",
+                        "/api/v1.0/shoppinglist/createtable"
                         ).permitAll()
                 .anyRequest().authenticated()
                 .and()
