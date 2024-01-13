@@ -244,7 +244,7 @@ public class PostgresTableManager {
             stmt = connection.createStatement();
             System.out.println("getting datasource");
 
-            String dropTable = "DROP TABLE IF EXISTS storages";
+            String dropTable = "DROP TABLE IF EXISTS shoppingitems";
             stmt.executeUpdate(dropTable);
 
             System.out.println("creating shoppinglistitems Table");
