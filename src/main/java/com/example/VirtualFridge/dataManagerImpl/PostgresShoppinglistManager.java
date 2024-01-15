@@ -187,7 +187,7 @@ public class PostgresShoppinglistManager {
                         rs.getString("unit"),
                         rs.getInt("amount")
                 );
-                 l_groc.setIDs(rs.getInt("groceryid"), shoppingListID);
+                 l_groc.setIDs(rs.getInt("shoppingitemid"), shoppingListID);
                  items.add(
                          new ShoppingListItem(
                                  rs.getBoolean("ticked"),
