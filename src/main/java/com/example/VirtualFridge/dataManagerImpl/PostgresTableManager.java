@@ -254,7 +254,7 @@ public class PostgresTableManager {
                     "name varchar(100) NOT NULL, " +
                     "amount int, " +
                     "unit varchar(50)," +
-                    "ticked boolean NOT NULL" +
+                    "ticked boolean NOT NULL," +
                     "itemOfList int NOT NULL, " +
                     "FOREIGN KEY (itemOfList) REFERENCES shoppinglists(ShoppingListId))";
             stmt.executeUpdate(createTable);
