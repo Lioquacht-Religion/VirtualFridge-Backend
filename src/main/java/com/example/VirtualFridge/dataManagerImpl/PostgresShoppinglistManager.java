@@ -93,7 +93,7 @@ public class PostgresShoppinglistManager {
                     "DELETE FROM shoppingitems WHERE itemoflist = ? " +
                             "AND ? IN (SELECT shoppinglistid FROM shoppinglists WHERE owner = ?);";
             String deleteStorage =
-                    "DELETE FROM shoppinglists WHERE shoppinglistidid = ? AND owner = ?;";
+                    "DELETE FROM shoppinglists WHERE shoppinglistid = ? AND owner = ?;";
 
             stmt = connection.prepareStatement(deleteStorageGroc);
             stmt.setInt(1, shoppingListID);
