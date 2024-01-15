@@ -36,7 +36,7 @@ public class MappingController {
             path = "/user/register",
             consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
     )
-    @ResponseStatus(HttpStatus.OK)
+    //@ResponseStatus(HttpStatus.OK)
     public String createUser(@RequestBody User user){
         //getPropertyFileUserManager("src/main/resources/user.properties").addUser(user);
         getPostgresUserManager().addUser(user);
