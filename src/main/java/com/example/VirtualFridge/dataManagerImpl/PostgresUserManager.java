@@ -259,7 +259,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
 
             System.out.println("delete User");
             String deleteUser =
-                    "DELETE FROM users WHERE id = ? AND email = ? AND password = ?;";
+                    "DELETE FROM users WHERE id = ?;";
 
 
             stmt = connection.prepareStatement(
