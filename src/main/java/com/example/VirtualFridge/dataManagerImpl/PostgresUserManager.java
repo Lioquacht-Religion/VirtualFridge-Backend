@@ -248,41 +248,40 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             connection = basicDataSource.getConnection();
 
             String deleteGroceries =
-                    "DELETE FROM groceries WHERE storedin IN  (SELECT storageid FROM storages WHERE owner = ?);";
+                    "DELETE FROM groceries WHERE storedin IN  (SELECT storageid FROM storages WHERE owner = ?)";
             String deleteStorages =
-                    "DELETE FROM storages WHERE owner = ?;";
+                    "DELETE FROM storages WHERE owner = ?";
 
             String deleteIngredients =
-                    "DELETE FROM ingredients WHERE partofrecipe IN  (SELECT recipeid FROM recipes WHERE owner = ?);";
+                    "DELETE FROM ingredients WHERE partofrecipe IN  (SELECT recipeid FROM recipes WHERE owner = ?)";
             String deleteRecipes =
-                    "DELETE FROM recipes WHERE owner = ?;";
+                    "DELETE FROM recipes WHERE owner = ?";
 
             System.out.println("delete User");
             String deleteUser =
-                    "DELETE FROM users WHERE id = ?;";
+                    "DELETE FROM users WHERE id = ?";
 
 
-            stmt = connection.prepareStatement(
-                    deleteGroceries + deleteStorages
-                    + deleteIngredients + deleteRecipes
-                    + deleteUser
-            );
+            stmt = connection.prepareStatement(deleteGroceries );
             stmt.setInt(1, userID);
-            stmt.setInt(2, userID);
+            stmt.executeUpdate();
 
-            stmt.setInt(3, userID);
-            stmt.setInt(4, userID);
+            stmt = connection.prepareStatement(deleteStorages );
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
 
-            stmt.setInt(5, userID);
-            stmt.setInt(6, userID);
-            stmt.setInt(7, userID);
+            stmt = connection.prepareStatement(deleteIngredients);
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
 
+            stmt = connection.prepareStatement(deleteRecipes);
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
 
-            stmt.executeUpdate(deleteGroceries);
-            stmt.executeUpdate(deleteStorages);
-            stmt.executeUpdate(deleteIngredients);
-            stmt.executeUpdate(deleteRecipes);
-            stmt.executeUpdate(deleteUser);
+            stmt = connection.prepareStatement(deleteUser);
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
+
             System.out.println("user deleted");
 
         }
