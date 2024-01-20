@@ -258,7 +258,7 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
                     "DELETE FROM recipes WHERE owner = ?";
 
             String deleteShoppingItems =
-                    "DELETE FROM shoppingitems WHERE itemoflist IN  (SELECT shoppingitemid FROM shoppinglists WHERE owner = ?)";
+                    "DELETE FROM shoppingitems WHERE itemoflist IN  (SELECT shoppinglistid FROM shoppinglists WHERE owner = ?)";
             String deleteShoppingLists =
                     "DELETE FROM shoppinglists WHERE owner = ?";
 
