@@ -284,6 +284,15 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
             stmt.setInt(1, userID);
             stmt.executeUpdate();
 
+            stmt = connection.prepareStatement(deleteShoppingItems);
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
+
+            stmt = connection.prepareStatement(deleteShoppingLists);
+            stmt.setInt(1, userID);
+            stmt.executeUpdate();
+
+
             stmt = connection.prepareStatement(deleteUser);
             stmt.setInt(1, userID);
             stmt.executeUpdate();
