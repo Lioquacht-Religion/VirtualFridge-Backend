@@ -17,6 +17,9 @@ src/main/resources/.dblogininfo2
 src/main/resources/dblogininfo.txt
 */dblogininfo.txt
 src/main/resources/keystore/vfridge.p12
+src/main/resources/keystore/vfridge.pem
+src/main/resources/keystore/certificate.pem
+src/main/resources/keystore/configuration.cnf
 src/main/resources/application.properties
 
 
