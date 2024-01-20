@@ -432,7 +432,7 @@ public class MappingController {
 
 
 
-
+/*
 
     @PostMapping(
             path = "/alexa",
@@ -482,7 +482,9 @@ public class MappingController {
 
         //return alexaRO;
     }
+*/
 
+    /*
     @PostMapping(
             path = "/alexa/readRecipes",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -526,6 +528,9 @@ public class MappingController {
 
         //return alexaRO;
     }
+    */
+
+    /*
     @PostMapping(
             path = "/alexa/postskill",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -568,5 +573,5 @@ public class MappingController {
         alexaRO.setResponse(response);
         return alexaRO;
     }
-
+*/
 }
