@@ -432,7 +432,6 @@ public class MappingController {
 
 
 
-/*
 
     @PostMapping(
             path = "/alexa",
@@ -450,7 +449,7 @@ public class MappingController {
             StringBuilder outText  = new StringBuilder("");
 
             try {
-                Storage storage = getPostgresStorageManager().getStorage("Lager1",
+                Storage storage = getPostgresStorageManager().getStorage(1,
                         getPostgresUserManager().getUser("klaus@mail.com"));
                 storage.setIDs(106, 80);
                 storage.setGroceries();
@@ -482,9 +481,9 @@ public class MappingController {
 
         //return alexaRO;
     }
-*/
 
-    /*
+
+
     @PostMapping(
             path = "/alexa/readRecipes",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -502,7 +501,7 @@ public class MappingController {
 
             try {
                 List<Recipe> recipes;
-                recipes = (List<Recipe>) getPostgresUserManager().getAllRecipes(106);
+                recipes = (List<Recipe>) getPostgresRecipeManager().getAllRecipes(106);
                 outText.append("Recipe list contains: ");
                 for(int i = 0; i < recipes.size(); i++){
                     outText.append(recipes.get(i).getName() + " ");
@@ -528,9 +527,9 @@ public class MappingController {
 
         //return alexaRO;
     }
-    */
 
-    /*
+
+
     @PostMapping(
             path = "/alexa/postskill",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
@@ -560,6 +559,43 @@ public class MappingController {
         //return alexaRO;
     }
 
+    @PostMapping(
+            path = "/alexa/shoppinglist",
+            consumes = {MediaType.APPLICATION_JSON_VALUE},
+            produces = {MediaType.APPLICATION_JSON_VALUE}
+    )
+
+    public AlexaRO getShoppingLists(@RequestBody AlexaRO alexaRO) {
+
+        if(alexaRO.getRequest().getType().equalsIgnoreCase("LaunchRequest")){
+            return prepareResponse(alexaRO, "Welcome to the Virtual Fridge", false);
+        }
+
+        if(alexaRO.getRequest().getType().equalsIgnoreCase("IntentRequest") &&
+                (alexaRO.getRequest().getIntent().getName().equalsIgnoreCase("ReadRecipesIntent"))){
+            StringBuilder outText  = new StringBuilder("");
+
+            try {
+                List<ShoppingList> shoppinglists;
+                shoppinglists = (List<ShoppingList>) getPostgresShoppinglistManager().getShoppingLists(1);
+                outText.append("I found the following shoppinglists: ");
+                for(int i = 0; i < shoppinglists.size(); i++){
+                    outText.append(shoppinglists.get(i).getName() + " ");
+
+                }
+
+                outText.append("Thank you for using our service");
+            }
+            catch (Exception e) {
+                outText.append("Unfortunately, we cannot reach heroku. Our REST server is not responding");
+            }
+
+            return
+                    prepareResponse(alexaRO, outText.toString(), true);
+        }
+        return prepareResponse(alexaRO, "We could not help you", true);
+    }
+
 
     private AlexaRO prepareResponse(AlexaRO alexaRO, String outText, boolean shouldEndSession) {
 
@@ -573,5 +609,5 @@ public class MappingController {
         alexaRO.setResponse(response);
         return alexaRO;
     }
-*/
+
 }
