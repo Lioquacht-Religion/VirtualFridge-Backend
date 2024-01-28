@@ -1,21 +1,19 @@
 package com.example.VirtualFridge;
 
 
-import com.example.VirtualFridge.dataManagerImpl.PostgresShoppinglistManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresTableManager;
-import com.example.VirtualFridge.dataManagerImpl.PostgresUserManager;
 import com.example.VirtualFridge.model.*;
-import com.example.VirtualFridge.model.alexa.OutputSpeechRO;
-import com.example.VirtualFridge.model.alexa.ResponseRO;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import com.example.VirtualFridge.model.foodwarning.FoodWarningRequestBody;
+import com.example.VirtualFridge.model.foodwarning.FoodWarningResponse;
+import com.example.VirtualFridge.model.foodwarning.FoodWarningResponseDocs;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import com.example.VirtualFridge.model.alexa.AlexaRO;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -428,6 +426,54 @@ public class MappingController {
     public String createShoppingListItemTable(){
         getPostgresTableManager().createTableShoppinglistItem();
         return "created shoppinglistitemtable";
+    }
+
+
+    @PostMapping(
+            path="/foodwarning",
+            consumes = "application/json",
+            produces = "application/json"
+    )
+    public FoodWarningResponse getFoodWarnings(
+            @RequestBody FoodWarningRequestBody reqBody
+            ){
+
+        System.out.println(reqBody.getFood()
+                .getSort());
+
+        RestTemplate restTemplate = new RestTemplate();
+
+        String uri = "https://megov.bayern.de/verbraucherschutz/baystmuv-verbraucherinfo/rest/api/warnings/merged";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(
+                Collections.singletonList(
+                        MediaType.APPLICATION_JSON
+                ));
+        headers.add(
+                "Authorization",
+                "baystmuv-vi-1.0 os=ios, key=9d9e8972-ff15-4943-8fea-117b5a973c61"
+        );
+        headers.add(
+                "Content-Type",
+                "application/json"
+        );
+        headers.add(
+                "Accept",
+                "application/json"
+        );
+
+
+
+        HttpEntity<FoodWarningRequestBody> entity =
+                new HttpEntity<>(reqBody, headers);
+        ResponseEntity<FoodWarningResponse> result =
+                restTemplate.exchange(
+                        uri, HttpMethod.POST,
+                        entity, FoodWarningResponse.class);
+        System.out.println(result.toString());
+        return result.getBody();
+        //return "Foodwarnings";
     }
 
 
