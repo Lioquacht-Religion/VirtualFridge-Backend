@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2024-01-28T20:43:02.771Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0" etag="1_tCC4rnQvwEQhF9Yi0B" version="23.0.2" type="github" pages="3">
+<mxfile host="app.diagrams.net" modified="2024-01-28T20:44:46.328Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:122.0) Gecko/20100101 Firefox/122.0" etag="_Ty34qyTi3obp3-6IUZ7" version="23.0.2" type="github" pages="3">
   <diagram id="R2lEEEUBdFMjLlhIrx00" name="Page-1">
     <mxGraphModel dx="1290" dy="566" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0" extFonts="Permanent Marker^https://fonts.googleapis.com/css?family=Permanent+Marker">
       <root>
@@ -656,7 +656,7 @@
         <mxCell id="44abgnFvzYn82c2mCA7a-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="44abgnFvzYn82c2mCA7a-1" vertex="1">
           <mxGeometry y="130" width="220" height="8" as="geometry" />
         </mxCell>
-        <mxCell id="44abgnFvzYn82c2mCA7a-4" value="+ method(type): type" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="44abgnFvzYn82c2mCA7a-1" vertex="1">
+        <mxCell id="44abgnFvzYn82c2mCA7a-4" value="+ getDBCredentialsManager(): this" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="44abgnFvzYn82c2mCA7a-1" vertex="1">
           <mxGeometry y="138" width="220" height="26" as="geometry" />
         </mxCell>
         <mxCell id="ofDHgIdik3UqF60Ve-rK-1" value="PostgresUserManager" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
