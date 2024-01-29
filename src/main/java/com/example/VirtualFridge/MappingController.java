@@ -483,7 +483,8 @@ public class MappingController {
 
 
 
-    @PostMapping(
+   /*
+   @PostMapping(
             path = "/alexa",
             consumes = {MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_JSON_VALUE}
@@ -528,13 +529,8 @@ public class MappingController {
         }
         return prepareResponse(alexaRO, "We could not help you", true);
 
-
-        //String outText = "";
-
-
-        //return alexaRO;
     }
-
+*/
 
 
     @PostMapping(

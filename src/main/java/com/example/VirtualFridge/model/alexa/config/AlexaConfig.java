@@ -7,17 +7,17 @@ import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-//@Configuration
+@Configuration
 public class AlexaConfig {
-  //  @Autowired
+    @Autowired
     private HandlerSpeechlet handlerSpeechlet;
 
-    //@Bean
+    @Bean
     public ServletRegistrationBean registerSpeechletServlet(){
         SpeechletServlet speechletServlet = new SpeechletServlet();
         speechletServlet.setSpeechlet(handlerSpeechlet);
 
-        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(speechletServlet, "/alexa");
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(speechletServlet, "/api/v1.0/alexa");
                 return servletRegistrationBean;
     }
 }

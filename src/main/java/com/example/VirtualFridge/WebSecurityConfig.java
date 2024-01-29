@@ -76,13 +76,13 @@ public class WebSecurityConfig {
 
     }
 
-    @Bean
+    /*@Bean
     public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainerCustomizer() {
         return (factory) -> {
             factory.addConnectorCustomizers((c) ->
                     ((AbstractHttp11Protocol<?>) c.getProtocolHandler()).setUseServerCipherSuitesOrder(true));
         };
-    }
+    }*/
 
     @Bean
     public UserDetailsService userDetailsService(
