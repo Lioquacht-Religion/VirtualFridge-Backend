@@ -490,7 +490,10 @@ public class MappingController {
     )
     public AlexaRO getGroceries(@RequestBody AlexaRO alexaRO) {
 
+        System.out.println("before launch intent");
+
         if(alexaRO.getRequest().getType().equalsIgnoreCase("LaunchRequest")){
+            System.out.println("inside launch intent");
             return prepareResponse(alexaRO, "Welcome to the Virtual Fridge", false);
         }
 
