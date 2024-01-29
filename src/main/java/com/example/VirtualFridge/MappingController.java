@@ -4,6 +4,9 @@ package com.example.VirtualFridge;
 import com.example.VirtualFridge.dataManagerImpl.PostgresStorageManager;
 import com.example.VirtualFridge.dataManagerImpl.PostgresTableManager;
 import com.example.VirtualFridge.model.*;
+import com.example.VirtualFridge.model.alexa.AlexaRO;
+import com.example.VirtualFridge.model.alexa.OutputSpeechRO;
+import com.example.VirtualFridge.model.alexa.ResponseRO;
 import com.example.VirtualFridge.model.foodwarning.FoodWarningRequestBody;
 import com.example.VirtualFridge.model.foodwarning.FoodWarningResponse;
 import com.example.VirtualFridge.model.foodwarning.FoodWarningResponseDocs;
@@ -14,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
