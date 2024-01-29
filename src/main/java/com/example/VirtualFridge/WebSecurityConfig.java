@@ -1,6 +1,9 @@
 package com.example.VirtualFridge;
 
 import com.example.VirtualFridge.dataManagerImpl.PostgresUserManager;
+import org.apache.coyote.http11.AbstractHttp11Protocol;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -71,8 +74,14 @@ public class WebSecurityConfig {
         source.registerCorsConfiguration("/**", conf);
         return source;
 
+    }
 
-
+    @Bean
+    public WebServerFactoryCustomizer<TomcatServletWebServerFactory> servletContainerCustomizer() {
+        return (factory) -> {
+            factory.addConnectorCustomizers((c) ->
+                    ((AbstractHttp11Protocol<?>) c.getProtocolHandler()).setUseServerCipherSuitesOrder(true));
+        };
     }
 
     @Bean
