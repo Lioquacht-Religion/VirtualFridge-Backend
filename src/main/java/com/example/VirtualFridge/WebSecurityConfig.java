@@ -6,6 +6,8 @@ import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactor
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +28,8 @@ import java.util.Collections;
 public class WebSecurityConfig {
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    public SecurityFilterChain secureFilterChain(HttpSecurity http)
         throws Exception{
         http
                 .cors()
@@ -39,7 +42,8 @@ public class WebSecurityConfig {
                         "/api/v1.0/foodwarning",
                         "/api/v1.0/recipe/createtable",
                         "/api/v1.0/shoppinglist/createtable",
-                        "/api/v1.0/shoppinglist/item/createtable",
+                        "/api/v1.0/shoppinglist/item/createtable"
+                        ,
                         "/alexa",
                         "/api/v1.0/alexa"
                         //"/api/v1.0/shoppinglist/add",
@@ -49,9 +53,13 @@ public class WebSecurityConfig {
                 .and()
                 .httpBasic()
                 .and()
-                .csrf().disable();
+                .csrf().disable()
+                //.x509().
+        ;
         return http.build();
     }
+
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
