@@ -156,6 +156,46 @@ public class PostgresUserManager implements UserManager, UserDetailsService {
         return r_user;
     }
 
+    public User getUserByName(String name) {
+
+        User r_user = new User("notFound", "404", "BOB");
+        PreparedStatement stmt = null;
+        Connection connection = null;
+
+        try {
+            connection = basicDataSource.getConnection();
+            stmt = connection.prepareStatement(
+                    "SELECT * FROM users WHERE name = ? ");
+            stmt.setString(1, name);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                r_user = new User(
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getString("password")
+                );
+                r_user.setID(rs.getInt("id"));
+            }
+            else{ r_user = new User("notFound", "404", "BOB");}
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return r_user;
+    }
+
+
     @Override
     public String addUser(User user) {
 

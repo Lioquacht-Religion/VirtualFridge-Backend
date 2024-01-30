@@ -27,7 +27,7 @@ dependencies {
 	implementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
 	//implementation 'org.springframework.boot:spring-boot-starter'
 	//testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation group: 'com.amazon.alexa', name: 'alexa-skills-kit', version: '1.8.1'
+	//implementation group: 'com.amazon.alexa', name: 'alexa-skills-kit', version: '1.8.1'
 	implementation group: 'com.amazon.alexa', name: 'ask-sdk', version: '2.29.0'
 }
 

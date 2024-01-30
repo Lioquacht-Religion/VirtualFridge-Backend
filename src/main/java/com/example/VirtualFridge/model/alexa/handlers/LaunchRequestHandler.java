@@ -13,6 +13,7 @@ public class LaunchRequestHandler implements RequestHandler {
 
     @Override
     public boolean canHandle(HandlerInput input) {
+
         return input.matches(requestType(LaunchRequest.class));
     }
 
