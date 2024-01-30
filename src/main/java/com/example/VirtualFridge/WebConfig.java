@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServlet;
 import java.io.IOException;
 import java.util.Properties;
 
-@Configuration
+//@Configuration
 public class WebConfig {
 
     public static final String SSL_KEYSTORE_FILE_PATH_KEY = "javax.net.ssl.keyStore";
     public static final String SSL_KEYSTORE_PASSWORD_KEY = "javax.net.ssl.keyStorePassword";
 
-    @Bean
+    //@Bean
     public ServletRegistrationBean<HttpServlet> alexaServlet() {
         loadProperties();
 
