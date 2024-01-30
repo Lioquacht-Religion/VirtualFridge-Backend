@@ -69,6 +69,7 @@ public class WebSecurityConfig {
                 Arrays.asList(
                         "http://localhost:4200",
                         "https://lioquacht-religion.github.io",
+                        "https://dane-adequate-especially.ngrok-free.app",
                         "*"
                 ));
         conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
