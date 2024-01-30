@@ -64,7 +64,7 @@ public class WebSecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         final CorsConfiguration conf = new CorsConfiguration();
-        conf.setAllowedOrigins(
+        /*conf.setAllowedOrigins(
                 Arrays.asList(
                         "http://localhost:7878",
                         "http://localhost:4200",
@@ -72,7 +72,8 @@ public class WebSecurityConfig {
                         "https://dane-adequate-especially.ngrok-free.app"
                 )
         );
-        /*
+        */
+
         conf.setAllowedOriginPatterns(
                 Arrays.asList(
                         "http://localhost:4200",
@@ -80,8 +81,6 @@ public class WebSecurityConfig {
                         "https://dane-adequate-especially.ngrok-free.app",
                         "*"
                 ));
-
-         */
         conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
         conf.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
