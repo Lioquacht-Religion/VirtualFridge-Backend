@@ -65,9 +65,14 @@ public class WebSecurityConfig {
                 )
         );
         */
-        conf.setAllowedOriginPatterns(Arrays.asList("*"));
+        conf.setAllowedOriginPatterns(
+                Arrays.asList(
+                        "http://localhost:4200",
+                        "https://lioquacht-religion.github.io",
+                        "*"
+                ));
         conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        //conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
+        conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
         conf.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
         conf.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
