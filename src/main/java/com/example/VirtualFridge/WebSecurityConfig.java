@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                         "http://localhost:7878",
                         "http://localhost:4200",
                         "https://lioquacht-religion.github.io",
-                        "https://dane-adequate-especially.ngrok-free.app",
+                        "https://dane-adequate-especially.ngrok-free.app"
                 )
         );
         /*
