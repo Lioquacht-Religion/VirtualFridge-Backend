@@ -156,6 +156,45 @@ public class PostgresStorageManager {
         return storage;
     }
 
+    public Storage getStorageByName(User Owner, String storName) {
+
+        Storage storage = new Storage("notFound", Owner);
+        PreparedStatement stmt = null;
+        Connection connection = null;
+
+        try {
+            connection = basicDataSource.getConnection();
+            stmt = connection.prepareStatement(
+                    "SELECT * FROM storages WHERE name = ? AND owner = ?;"
+            );
+            stmt.setString(1, storName);
+            stmt.setInt(2, Owner.getID());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                storage = new Storage(
+                        rs.getString("name"),
+                        Owner
+                );
+                storage.setIDs(  rs.getInt("owner"),
+                        rs.getInt("storageid") );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        return storage;
+    }
+
     public String deleteStorage(int userID, int storageID){
 
         PreparedStatement stmt = null;

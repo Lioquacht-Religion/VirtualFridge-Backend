@@ -23,8 +23,7 @@ public class AllStoragesIntentHandler implements IntentRequestHandler {
 
     @Override
     public Optional<Response> handle(HandlerInput input, IntentRequest intentRequest) {
-                Slot username = intentRequest.getIntent().getSlots().get("userNameQuerie");
-        //Slot storagename = intentRequest.getIntent().getSlots().get("storageName");
+        Slot username = intentRequest.getIntent().getSlots().get("userNameQuerie");
         String speechText =  "Folgende Lager gehören zum user " +
                 username.getValue() + " "
                 //+ "storage: " + storagename.getValue()
