@@ -16,7 +16,7 @@ public class DBCredentialsManager {
 
     private DBCredentialsManager() {
         basicDataSource = new BasicDataSource();
-        this.getDBLoginData("src/main/resources/.dblogininfo");
+        this.getDBLoginData("src/main/resources/.dblogininfo2");
         //basicDataSource.setDriverClassName("org.postgresql.Driver");
         basicDataSource.setUrl(databaseURL);
         basicDataSource.setUsername(username);

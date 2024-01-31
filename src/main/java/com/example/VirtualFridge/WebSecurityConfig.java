@@ -82,8 +82,8 @@ public class WebSecurityConfig {
                         "*"
                 ));
         conf.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
-        conf.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with"));
+        conf.setExposedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with", "ngrok-skip-browser-warning"));
+        conf.setAllowedHeaders(Arrays.asList("Authorization", "content-type", "x-requested-with", "ngrok-skip-browser-warning"));
         conf.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", conf);

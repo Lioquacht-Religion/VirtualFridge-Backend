@@ -217,8 +217,8 @@ public class PostgresShoppinglistManager {
         try {
             connection = basicDataSource.getConnection();
             stmt = connection.prepareStatement(
-                    "UPDATE shoppingitems SET ticked = ? WHERE shoppingitemid = ? AND itemoflist = ?" +
-                            "AND ? IN (SELECT shoppinglistid FROM shoppinglists WHERE owner = ?);"
+                    "UPDATE shoppingitems SET ticked = ? WHERE shoppingitemid = ? AND itemoflist = ? " +
+                            "AND ? IN (SELECT shoppinglistid FROM shoppinglists WHERE owner = ? );"
             );
             stmt.setBoolean(1, ticked );
             stmt.setInt(2, itemID );
