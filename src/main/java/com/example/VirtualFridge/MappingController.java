@@ -344,8 +344,10 @@ public class MappingController {
     }
 
     @GetMapping("/storage/recipe/suggestion")
-    public Collection<Recipe> getRecipeSug(@RequestParam String userID, @RequestParam String storageID){
-        return getPostgresStorageManager().getAllRecipeSuggestions(Integer.parseInt(userID), Integer.parseInt(storageID));
+    public Collection<Recipe> getRecipeSug(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storageID){
+        return getPostgresStorageManager().getAllRecipeSuggestions(user.getID(), storageID);
     }
 
     @GetMapping(
