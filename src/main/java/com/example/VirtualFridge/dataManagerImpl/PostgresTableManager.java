@@ -21,6 +21,94 @@ public class PostgresTableManager {
 
     }
 
+    public void createTableFood(){
+        String createTable = "CREATE TABLE food (" +
+                    "food_id SERIAL PRIMARY KEY, " +
+                    "food_name varchar(100) NOT NULL)";
+
+        createTable(createTable, "food");
+    }
+
+    public void createTableFoodAttributeRel(){
+        String createTable = "CREATE TABLE food_attribute (" +
+                    "food_id int REFERENCES food (food_id) ON UPDATE CASCADE ON DELETE CASCADE , " +
+                    "attribute_id int REFERENCES attribute (attribute_id) ON UPDATE CASCADE  ON DELETE CASCADE )"
+                ;
+
+        createTable(createTable, "food_attribute");
+    }
+
+    public void createTableAttribute(){
+        String createTable = "CREATE TABLE attribute (" +
+                    "attribute_id SERIAL PRIMARY KEY, " +
+                    "attribute_name varchar(100) NOT NULL," +
+                    "unit_id int REFERENCES unit (unit_id))";
+
+        createTable(createTable, "attribute");
+
+    }
+
+    public void createTableUnit(){
+        String createTable = "CREATE TABLE unit (" +
+                    "unit_id SERIAL PRIMARY KEY, " +
+                    "unit_name varchar(30) NOT NULL)";
+        createTable(createTable, "unit");
+    }
+
+    public void createTableAttrValue(){
+        String createTable = "CREATE TABLE attributevalue (" +
+                    "attributevalue_id SERIAL PRIMARY KEY, " +
+                    "attributevalue_value varchar(30) NOT NULL, " +
+                    "food_id int NOT NULL," +
+                    "FOREIGN KEY (food_id) REFERENCES food(food_id) ON UPDATE CASCADE ON DELETE CASCADE," +
+                    "attribute_id int NOT NULL, " +
+                    "FOREIGN KEY (attribute_id) REFERENCES attribute(attribute_id) ON UPDATE CASCADE ON DELETE CASCADE )";
+
+        createTable(createTable, "attributevalue");
+
+    }
+    public void createTableAmount(){
+        String createTable = "CREATE TABLE instance (" +
+                    "instance_id SERIAL PRIMARY KEY, " +
+                    "instance_amount int NOT NULL, " +
+                    "food_id int NOT NULL, " +
+                    "FOREIGN KEY (food_id) REFERENCES food(food_id) ON UPDATE CASCADE ON DELETE CASCADE , " +
+                    "storage_id int NOT NULL, " +
+                    "FOREIGN KEY (storage_id) REFERENCES storages(storage_id)) ON UPDATE CASCADE  ON DELETE CASCADE )";
+        createTable(createTable, "amount");
+
+    }
+
+    private void createTable(String createTableSQL, String tableName){
+        System.out.println("Starting to create new Table");
+        Statement stmt = null;
+        Connection connection = null;
+        try{
+            connection = basicDataSource.getConnection();
+            stmt = connection.createStatement();
+            System.out.println("getting datasource");
+
+            String dropTable = "DROP TABLE IF EXISTS " + tableName;
+            stmt.executeUpdate(dropTable);
+
+            System.out.println("creating " + tableName + " Table");
+
+            stmt.executeUpdate(createTableSQL);
+            System.out.println(tableName + " Table created");
+
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+
+        try{
+            stmt.close();
+            connection.close();
+        }catch(SQLException e){
+            e.printStackTrace();
+        }
+    }
+
     public void createTableUser() {
 
         // Be carefull: It deletes data if table already exists.
