@@ -218,13 +218,13 @@ public class PostgresRecipeManager {
             stmt.setInt(1, recipeID);
             stmt.setInt(3, userID);
             stmt.setInt(2, recipeID);
-            stmt.executeQuery(deleteStorage); //TODO: wrong String -> deleteStorageGroc
+            stmt.executeUpdate();
 
 
             stmt = connection.prepareStatement(deleteStorage);
             stmt.setInt(1, recipeID);
             stmt.setInt(2, userID);
-            stmt.executeUpdate(deleteStorage);
+            stmt.executeUpdate();
 
 
         }
