@@ -53,7 +53,16 @@ public class PostgresStorageV2Manager {
         for(Attribute a : food.getAttributes()) {
                 this.addNewAttribute(a);
                 Attribute l_a = this.getAttributeByName(a.getName());
-                this.addValueOfAttributeToFood(food, l_a);
+                l_a.setValue(a.getValue());
+
+                Attribute existingAttrValue = getAttributeValueOfFood(food, l_a);
+                if(existingAttrValue != null) {
+                    existingAttrValue.setValue(a.getValue());
+                    this.updateAttributeValueOfFood(food, existingAttrValue);
+                }
+                else {
+                    this.addValueOfAttributeToFood(food, l_a);
+                }
         }
         return food.getName();
     }
@@ -248,6 +257,7 @@ public class PostgresStorageV2Manager {
             stmt = connection.prepareStatement(
                     "INSERT into attributevalue (attributevalue_value, food_id, attribute_id) VALUES ( ?, ?, ? );"
             );
+            System.out.println(attribute.getName() +" : "+ attribute.getValue());
             stmt.setString(1, attribute.getValue());
             stmt.setInt(2, food.getId());
             stmt.setInt(3, attribute.getId());
@@ -263,6 +273,70 @@ public class PostgresStorageV2Manager {
         return "attribute " + attribute.getName() + " with value: " + attribute.getValue() + " was added";
     }
 
+    public Attribute getAttributeValueOfFood(Food food, Attribute attribute){
+        Attribute ret_a = null;
+        PreparedStatement stmt = null;
+        Connection connection = null;
+
+        try {
+            connection = basicDataSource.getConnection();
+            stmt = connection.prepareStatement(
+                    "SELECT * FROM attributevalue WHERE food_id = ? AND attribute_id = ?;"
+            );
+            stmt.setInt(1, food.getId());
+            stmt.setInt(2, attribute.getId());
+
+            ResultSet rs = stmt.executeQuery();
+
+            if(rs.next()) {
+                ret_a = this.getAttribute(rs.getInt("attribute_id"));
+                attribute.setValue(rs.getString("attributevalue_value"));
+                attribute.setValueID(rs.getInt("attributevalue_id"));
+                attribute.setFoodID(food.getId());
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return ret_a;
+
+    }
+
+       public void updateAttributeValueOfFood(Food food, Attribute attribute){
+        PreparedStatement stmt = null;
+        Connection connection = null;
+
+        try {
+            connection = basicDataSource.getConnection();
+            stmt = connection.prepareStatement(
+                    "UPDATE attributevalue SET attributevalue_value = ? " +
+                            "WHERE food_id = ? AND attribute_id = ?;"
+            );
+
+            stmt.setString(1, attribute.getValue());
+            stmt.setInt(2, food.getId());
+            stmt.setInt(3, attribute.getId());
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            stmt.close();
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String addNewAttribute(Attribute attribute) {
 
