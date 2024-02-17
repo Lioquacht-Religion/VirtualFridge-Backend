@@ -50,7 +50,7 @@ public class MappingController {
         return "Hello";
     }
 
-    @GetMapping("/user/all")
+    //@GetMapping("/user/all")
     public Collection<User> getUsers(//@RequestParam(value = "email", defaultValue = "none")
                              //String email
     ){

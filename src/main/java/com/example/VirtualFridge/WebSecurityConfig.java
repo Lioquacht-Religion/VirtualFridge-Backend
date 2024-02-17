@@ -38,16 +38,9 @@ public class WebSecurityConfig {
                 .antMatchers(
                         "/api/v1.0/hello",
                         "/api/v1.0/user/register",
-                        "/api/v1.0/user/all",
                         "/api/v1.0/foodwarning",
-                        "/api/v1.0/recipe/createtable",
-                        "/api/v1.0/shoppinglist/createtable",
-                        "/api/v1.0/shoppinglist/item/createtable"
-                        ,
                         "/alexa",
                         "/api/v1.0/alexa"
-                        //"/api/v1.0/shoppinglist/add",
-                        //"/api/v1.0/shoppinglist/item/add"
                         ).permitAll()
                 .anyRequest().authenticated()
                 .and()
