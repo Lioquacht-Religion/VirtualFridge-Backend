@@ -74,7 +74,7 @@ public class PostgresTableManager {
                     "food_id int NOT NULL, " +
                     "FOREIGN KEY (food_id) REFERENCES food(food_id) ON UPDATE CASCADE ON DELETE CASCADE , " +
                     "storage_id int NOT NULL, " +
-                    "FOREIGN KEY (storage_id) REFERENCES storages(storage_id)) ON UPDATE CASCADE  ON DELETE CASCADE )";
+                    "FOREIGN KEY (storage_id) REFERENCES storages(StorageId) ON UPDATE CASCADE  ON DELETE CASCADE )";
         createTable(createTable, "amount");
 
     }

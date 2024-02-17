@@ -2,11 +2,14 @@ package com.example.VirtualFridge;
 
 
 import com.example.VirtualFridge.dataManagerImpl.PostgresStorageV2Manager;
+import com.example.VirtualFridge.model.User;
 import com.example.VirtualFridge.model.foodwarning.storagev2.Food;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 
 @RestController
@@ -70,6 +73,34 @@ public class StorageV2MappingController {
         return PostgresStorageV2Manager.getPostgresStorageV2Manager()
                 .getFoodWithAttributes(foodID);
     }
+
+    @GetMapping(
+            path="/food/instances",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public Collection<Food> getInstancesOfFoodInStorage(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storagev2ID) {
+        return PostgresStorageV2Manager.getPostgresStorageV2Manager()
+                .getInstancesOfFoodInStorage(user.getID(), storagev2ID);
+    }
+
+    @PostMapping(
+            path="/food/instances",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE}
+    )
+    @ResponseStatus(HttpStatus.OK)
+    public Food addInstanceOfFoodToStorage(
+            @AuthenticationPrincipal User user,
+            @RequestParam int storagev2ID,
+            @RequestBody Food foodInstance
+    ) {
+        return PostgresStorageV2Manager.getPostgresStorageV2Manager()
+                .addInstanceOfFoodToStorage(user.getID(), storagev2ID, foodInstance);
+    }
+
 
 
 

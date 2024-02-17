@@ -77,7 +77,7 @@ public class PostgresStorageV2Manager {
         try {
             connection = basicDataSource.getConnection();
             stmt = connection.prepareStatement(
-                    "SELECT * FROM instance WHERE storage = ?;"
+                    "SELECT * FROM instance WHERE storage_id = ?;"
             );
             stmt.setInt(1, storageID);
 
@@ -94,6 +94,28 @@ public class PostgresStorageV2Manager {
         } catch (SQLException e) {e.printStackTrace();}
         return foods;
     }
+
+    public Food addInstanceOfFoodToStorage(int OwnerID, int storageID, Food instance) {
+        PreparedStatement stmt = null;Connection connection = null;
+
+        try {
+            connection = basicDataSource.getConnection();
+            stmt = connection.prepareStatement(
+                    "INSERT INTO instance (instance_amount, food_id, storage_id) VALUES (?, ?, ?);"
+            );
+            stmt.setInt(1, instance.getAmount());
+            stmt.setInt(2, instance.getId());
+            stmt.setInt(3, storageID);
+
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {e.printStackTrace();}
+
+        try {stmt.close();connection.close();
+        } catch (SQLException e) {e.printStackTrace();}
+        return instance;
+    }
+
 
     public Food getFood(int foodID) {
 
